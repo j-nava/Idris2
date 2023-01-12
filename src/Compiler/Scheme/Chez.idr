@@ -5,6 +5,7 @@ import Compiler.CompileExpr
 import Compiler.Generated
 import Compiler.Opts.ToplevelConstants
 import Compiler.Scheme.Common
+import Compiler.NoMangle
 
 import Core.Context
 import Core.Context.Log
@@ -454,7 +455,9 @@ compileToSS : Ref Ctxt Defs ->
               Bool -> -- profiling
               String -> ClosedTerm -> (outfile : String) -> Core ()
 compileToSS c prof appdir tm outfile
-    = do ds <- getDirectives Chez
+    = do 
+         _ <- initNoMangle ["chez"] (const True)
+         ds <- getDirectives Chez
          libs <- findLibs ds
          traverse_ copyLib libs
          cdata <- getCompileData False Cases tm

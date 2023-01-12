@@ -313,6 +313,7 @@ chezTests = MkTestPool "Chez backend" [] (Just Chez)
     , "semaphores002"
     , "perf001"
     , "reg001"
+    , "export001"
     ]
 
 refcTests : IO TestPool
