@@ -224,7 +224,7 @@ idrisTestsTotality = MkTestPool "Totality checking" [] Nothing
        -- Totality checking
        "total001", "total002", "total003", "total004", "total005",
        "total006", "total007", "total008", "total009", "total010",
-       "total011", "total012", "total013"
+       "total011", "total012", "total013", "total014", "total015"
       ]
 
 -- This will only work with an Idris compiled via Chez or Racket, but at
@@ -335,10 +335,10 @@ nodeTests : TestPool
 nodeTests = MkTestPool "Node backend" [] (Just Node)
     [ "node001", "node002", "node003", "node004", "node005", "node006"
     , "node007", "node008", "node009", "node011", "node012", "node015"
-    , "node017", "node018", "node019", "node021", "node022", "node023"
-    , "node024", "node025", "node026", "node027"
+    , "node017", "node018", "node019", "node020", "node021", "node022"
+    , "node023", "node024", "node025", "node026", "node027"
     , "perf001"
-    -- , "node14", "node020"
+    -- , "node14"
     , "args"
     , "bitops"
     , "casts"
