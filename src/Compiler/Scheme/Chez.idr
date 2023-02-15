@@ -457,10 +457,11 @@ compileToSS : Ref Ctxt Defs ->
 compileToSS c prof appdir tm outfile
     = do 
          _ <- initNoMangle ["chez"] (const True)
+         nm <- allNoMangle
          ds <- getDirectives Chez
          libs <- findLibs ds
          traverse_ copyLib libs
-         cdata <- getCompileData False Cases tm
+         cdata <- getCompileDataWith ["chez"] False Cases tm
          let ndefs = namedDefs cdata
          let ctm = forget (mainExpr cdata)
 
@@ -478,6 +479,7 @@ compileToSS c prof appdir tm outfile
          main <- schExp constants (chezExtPrim constants) chezString 0 ctm
          support <- readDataFile "chez/support.ss"
          extraRuntime <- getExtraRuntime ds
+         let exports = concat ((\(n, e) => "\n  (define-top-level-value '" ++ fromString e ++ " " ++ schName n ++ ")") <$> nm)
          let scm = concat $ the (List _)
                    [ schHeader chez (map snd libs ++ loadlibs) True
                    , fromString support
@@ -485,6 +487,7 @@ compileToSS c prof appdir tm outfile
                    , code
                    , "(collect-request-handler (lambda () (collect) (blodwen-run-finalisers)))\n"
                    , main
+                   , exports
                    , schFooter prof True
                    ]
          Right () <- coreLift $ writeFile outfile $ build scm

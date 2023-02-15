@@ -57,3 +57,9 @@ lookupNoMangle :
     Name ->
     Core (Maybe String)
 lookupNoMangle n = pure $ isNoMangle !(get NoMangleMap) n
+
+export
+allNoMangle :
+  {auto nm : Ref NoMangleMap NoMangleMap} ->
+  Core (List (Name, String))
+allNoMangle = toList . .map <$> get NoMangleMap
