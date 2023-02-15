@@ -1,5 +1,0 @@
-rm -rf build
-
-$1 --no-banner --no-color --console-width 0 --quiet Main.idr < input
-
-cat build/exec/_tmpchez_app/_tmpchez.ss | grep -o -e "Main-exportedFoo" -e "Main-exportedBar"

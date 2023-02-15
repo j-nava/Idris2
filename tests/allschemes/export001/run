@@ -1,0 +1,8 @@
+rm -rf build
+
+$1 --no-banner --no-color --console-width 0 --quiet Main.idr < input
+
+TMP_DIR=$(find build/exec/ -type d -name "_tmp*" -print -quit)
+TMP_SRC=$(find $TMP_DIR/ -type f -name "_tmp*" -print -quit)
+
+cat $TMP_SRC | grep -o -e "Main-exportedFoo" -e "Main-exportedBar"

@@ -201,6 +201,7 @@ idrisTestsAllSchemes cg = MkTestPool
       [ "scheme001"
       , "channels001", "channels002", "channels003", "channels004", "channels005"
       , "channels006"
+      , "export001"
       ]
 
 idrisTestsAllBackends : Requirement -> TestPool
@@ -315,7 +316,6 @@ chezTests = MkTestPool "Chez backend" [] (Just Chez)
     , "semaphores002"
     , "perf001"
     , "reg001"
-    , "export001"
     ]
 
 refcTests : IO TestPool

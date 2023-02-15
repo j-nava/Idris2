@@ -1,2 +1,2 @@
-make all && make test only=chez/export001
+make all && make test only=allschemes/export001
 
