@@ -400,7 +400,7 @@ compileToRKT c appdir tm outfile
          support <- readDataFile "racket/support.rkt"
          ds <- getDirectives Racket
          extraRuntime <- getExtraRuntime ds
-         exports <- schExports ["scheme", "racket"] (\e, l => "(define-top-level-value '" ++ e ++ " " ++ l ++ ")")
+         exports <- schExports ["scheme", "racket"] (\e, l => "(define " ++ e ++ " " ++ l ++ ")")
          let prof = profile !getSession
          let runmain
                 = if prof
@@ -408,7 +408,7 @@ compileToRKT c appdir tm outfile
                      else "(void " ++ main ++ ")\n"
          let scm = schHeader prof (concat (map fst fgndefs)) ++
                    fromString support ++ fromString extraRuntime ++ code ++
-                   runmain ++ exports ++ schFooter
+                   exports ++ runmain ++ schFooter
          Right () <- coreLift $ writeFile outfile $ build scm
             | Left err => throw (FileErr outfile err)
          coreLift_ $ chmodRaw outfile 0o755

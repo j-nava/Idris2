@@ -289,7 +289,7 @@ schExports :  { auto c : Ref Ctxt Defs } ->
 schExports backends f = do
     _ <- initNoMangle backends (const True) -- TODO: validate exported name
     nm <- allNoMangle
-    pure $ concat ((\(n, e) => "\n  " ++ f (schName n) (fromString e)) <$> nm)
+    pure $ sepBy "\n" ((\(e, l) => f (fromString l) (schName e)) <$> nm)
 
 export
 schArglist : List Name -> Builder
