@@ -282,11 +282,12 @@ schCaseDef Nothing = ""
 schCaseDef (Just tm) = "(else " ++ tm ++ ")"
 
 export
-schExports : { auto c : Ref Ctxt Defs } ->
+schExports :  { auto c : Ref Ctxt Defs } ->
+              List String ->
               ((exportedName : Builder) -> (localName : Builder) -> Builder) ->
               Core Builder
-schExports f = do
-    _ <- initNoMangle ["chez"] (const True)
+schExports backends f = do
+    _ <- initNoMangle backends (const True) -- TODO: validate exported name
     nm <- allNoMangle
     pure $ concat ((\(n, e) => "\n  " ++ f (schName n) (fromString e)) <$> nm)
 

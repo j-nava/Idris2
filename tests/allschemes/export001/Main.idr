@@ -3,7 +3,7 @@ module Main
 exportedBar : Int
 exportedBar = 42
 
-%export "chez:exportedFooFn"
+%export "scheme:exportedFooFn"
 exportedFoo : Int -> Int
 exportedFoo x = x + exportedBar
 

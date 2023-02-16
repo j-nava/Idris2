@@ -384,7 +384,7 @@ startRacketWinSh racket appdir target = """
 compileToRKT : Ref Ctxt Defs ->
                String -> ClosedTerm -> (outfile : String) -> Core ()
 compileToRKT c appdir tm outfile
-    = do cdata <- getCompileData False Cases tm
+    = do cdata <- getCompileDataWith ["scheme", "racket"] False Cases tm
          let ndefs = namedDefs cdata
          let ctm = forget (mainExpr cdata)
 
@@ -400,6 +400,7 @@ compileToRKT c appdir tm outfile
          support <- readDataFile "racket/support.rkt"
          ds <- getDirectives Racket
          extraRuntime <- getExtraRuntime ds
+         exports <- schExports ["scheme", "racket"] (\e, l => "(define-top-level-value '" ++ e ++ " " ++ l ++ ")")
          let prof = profile !getSession
          let runmain
                 = if prof
@@ -407,7 +408,7 @@ compileToRKT c appdir tm outfile
                      else "(void " ++ main ++ ")\n"
          let scm = schHeader prof (concat (map fst fgndefs)) ++
                    fromString support ++ fromString extraRuntime ++ code ++
-                   runmain ++ schFooter
+                   runmain ++ exports ++ schFooter
          Right () <- coreLift $ writeFile outfile $ build scm
             | Left err => throw (FileErr outfile err)
          coreLift_ $ chmodRaw outfile 0o755

@@ -458,7 +458,7 @@ compileToSS c prof appdir tm outfile
          ds <- getDirectives Chez
          libs <- findLibs ds
          traverse_ copyLib libs
-         cdata <- getCompileDataWith ["chez"] False Cases tm
+         cdata <- getCompileDataWith ["scheme", "chez"] False Cases tm
          let ndefs = namedDefs cdata
          let ctm = forget (mainExpr cdata)
 
@@ -476,7 +476,7 @@ compileToSS c prof appdir tm outfile
          main <- schExp constants (chezExtPrim constants) chezString 0 ctm
          support <- readDataFile "chez/support.ss"
          extraRuntime <- getExtraRuntime ds
-         exports <- schExports (\e, l => "(define-top-level-value '" ++ e ++ " " ++ l ++ ")")
+         exports <- schExports ["scheme", "chez"] (\e, l => "(define-top-level-value '" ++ e ++ " " ++ l ++ ")")
          let scm = concat $ the (List _)
                    [ schHeader chez (map snd libs ++ loadlibs) True
                    , fromString support
