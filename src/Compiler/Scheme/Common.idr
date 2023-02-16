@@ -7,6 +7,7 @@ module Compiler.Scheme.Common
 
 import Compiler.Common
 import Compiler.CompileExpr
+import Compiler.NoMangle
 
 import Core.Context
 import Core.Name
@@ -279,6 +280,15 @@ schConstant _ WorldVal = "#f"
 schCaseDef : Maybe Builder -> Builder
 schCaseDef Nothing = ""
 schCaseDef (Just tm) = "(else " ++ tm ++ ")"
+
+export
+schExports : { auto c : Ref Ctxt Defs } ->
+              ((exportedName : Builder) -> (localName : Builder) -> Builder) ->
+              Core Builder
+schExports f = do
+    _ <- initNoMangle ["chez"] (const True)
+    nm <- allNoMangle
+    pure $ concat ((\(n, e) => "\n  " ++ f (schName n) (fromString e)) <$> nm)
 
 export
 schArglist : List Name -> Builder

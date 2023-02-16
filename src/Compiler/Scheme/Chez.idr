@@ -5,7 +5,6 @@ import Compiler.CompileExpr
 import Compiler.Generated
 import Compiler.Opts.ToplevelConstants
 import Compiler.Scheme.Common
-import Compiler.NoMangle
 
 import Core.Context
 import Core.Context.Log
@@ -456,8 +455,6 @@ compileToSS : Ref Ctxt Defs ->
               String -> ClosedTerm -> (outfile : String) -> Core ()
 compileToSS c prof appdir tm outfile
     = do 
-         _ <- initNoMangle ["chez"] (const True)
-         nm <- allNoMangle
          ds <- getDirectives Chez
          libs <- findLibs ds
          traverse_ copyLib libs
@@ -479,7 +476,7 @@ compileToSS c prof appdir tm outfile
          main <- schExp constants (chezExtPrim constants) chezString 0 ctm
          support <- readDataFile "chez/support.ss"
          extraRuntime <- getExtraRuntime ds
-         let exports = concat ((\(n, e) => "\n  (define-top-level-value '" ++ fromString e ++ " " ++ schName n ++ ")") <$> nm)
+         exports <- schExports (\e, l => "(define-top-level-value '" ++ e ++ " " ++ l ++ ")")
          let scm = concat $ the (List _)
                    [ schHeader chez (map snd libs ++ loadlibs) True
                    , fromString support
