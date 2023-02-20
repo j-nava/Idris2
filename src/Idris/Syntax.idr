@@ -38,6 +38,14 @@ Show Fixity where
   show Infix  = "infix"
   show Prefix = "prefix"
 
+export
+Eq Fixity where
+  InfixL == InfixL = True
+  InfixR == InfixR = True
+  Infix == Infix = True
+  Prefix == Prefix = True
+  _ == _ = False
+
 public export
 OpStr' : Type -> Type
 OpStr' nm = nm
@@ -279,8 +287,8 @@ mutual
        MkPRecord : (tyname : Name) ->
                    (params : List (Name, RigCount, PiInfo (PTerm' nm), PTerm' nm)) ->
                    (opts : List DataOpt) ->
-                   (conName : Maybe Name) ->
-                   List (PField' nm) ->
+                   (conName : Maybe (String, Name)) ->
+                   (fields : List (PField' nm)) ->
                    PRecordDecl' nm
        MkPRecordLater : (tyname : Name) ->
                         (params : List (Name, RigCount, PiInfo (PTerm' nm), PTerm' nm)) ->
@@ -407,7 +415,7 @@ mutual
                     (doc : String) ->
                     (params : List (Name, (RigCount, PTerm' nm))) ->
                     (det : List Name) ->
-                    (conName : Maybe Name) ->
+                    (conName : Maybe (String, Name)) ->
                     List (PDecl' nm) ->
                     PDecl' nm
        PImplementation : FC ->
