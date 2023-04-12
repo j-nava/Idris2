@@ -7,6 +7,7 @@ module Compiler.Scheme.Common
 
 import Compiler.Common
 import Compiler.CompileExpr
+import Compiler.NoMangle
 
 import Core.Context
 import Core.Name
@@ -279,6 +280,16 @@ schConstant _ WorldVal = "#f"
 schCaseDef : Maybe Builder -> Builder
 schCaseDef Nothing = ""
 schCaseDef (Just tm) = "(else " ++ tm ++ ")"
+
+export
+schExports :  { auto c : Ref Ctxt Defs } ->
+              List String ->
+              ((exportedName : Builder) -> (localName : Builder) -> Builder) ->
+              Core Builder
+schExports backends f = do
+    _ <- initNoMangle backends (const True) -- TODO: validate exported name
+    nm <- allNoMangle
+    pure $ sepBy "\n" ((\(e, l) => f (fromString l) (schName e)) <$> nm)
 
 export
 schArglist : List Name -> Builder
